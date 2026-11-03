@@ -105,9 +105,21 @@ mvn verify           also the exe, in app/target/jr
 Every dependency resolves from Maven Central. A build from an empty local repository works with no extra steps.
 Every dependency resolves from Maven Central, with one exception: `leasegate-frame` is used at its 0.3 snapshot, from the Central snapshot repository that the parent pom already names. A build from an empty local repository works with no extra steps.
 
+## The sound of a new message
+
+slackfx ships its own default: two soft wooden knocks, generated in memory by the program, so there is no sound file in this repository or in a release. Tray menu: "Sound for messages" turns it off, "Test sound" plays it.
+
+To use a different sound, put a WAV file named `sound.wav` in the app's folder (see below) and it is used instead; delete it to go back to the default. If you prefer the sound of the Slack desktop app, you can make that file yourself from your own installed copy. Its sounds are copyrighted by Slack, so they are not included here and nobody should redistribute them; using the copy on your own machine is your choice. The new-message sound is `knock_brush.mp3` in the app's `resources` folder, and Java plays only WAV, so convert it with [ffmpeg](https://ffmpeg.org):
+
+```
+ffmpeg -i "<Slack install>\app\resources\knock_brush.mp3" -ac 1 -ar 44100 -c:a pcm_s16le "%USERPROFILE%\chatsgate\slackfx\sound.wav"
+```
+
+For the Microsoft Store install, `<Slack install>` is a folder such as `C:\Program Files\WindowsApps\com.tinyspeck.slackdesktop_<version>_x64__8yrtsj140pw4g` (you may need to open it from an elevated prompt or copy the file out first). Slack's other sounds are in the same folder.
+
 ## Where things are
 
-Everything slackfx keeps is in `%USERPROFILE%\chatsgate\slackfx\` (an install made before the project moved keeps using `%USERPROFILE%\fxslack\slackfx\` until the new folder exists): `app-config.json` (the tokens), `sessions.json` (stored accounts), `cache/` (names, pictures, the last conversation list), `run/` (the log, and where slackfx listens). slackfx listens on `127.0.0.1` only, with a random token kept in your user profile.
+Everything slackfx keeps is in `%USERPROFILE%\chatsgate\slackfx\` (an install made before the project moved keeps using `%USERPROFILE%\fxslack\slackfx\` until the new folder exists): `app-config.json` (the tokens), `sessions.json` (stored accounts), `cache/` (names, pictures, the last conversation list), `run/` (the log, and where slackfx listens), and `sound.wav` if you chose a sound of your own. slackfx listens on `127.0.0.1` only, with a random token kept in your user profile.
 
 ## Licence
 
