@@ -28,19 +28,19 @@ public final class Live implements WebSocket.Listener {
     public void start() { Thread.ofVirtual().name("slack-socket").start(this::loop); }
 
     void loop() {
-        var wait = 2;
+        var wait = 1;
         while (true) {
             try {
                 closed = new CompletableFuture<>();
                 HTTP.newWebSocketBuilder().buildAsync(URI.create(address()), this).join();
-                wait = 2;
+                wait = 1;
                 closed.join();
             } catch (Exception e) {
                 Log.warn("socket: " + e.getMessage());
             }
             connected = false;
             try { Thread.sleep(Duration.ofSeconds(wait)); } catch (InterruptedException e) { return; }
-            wait = Math.min(60, wait * 2);
+            wait = Math.min(15, wait * 2); // a slow start used to leave live updates dark for a minute
         }
     }
 

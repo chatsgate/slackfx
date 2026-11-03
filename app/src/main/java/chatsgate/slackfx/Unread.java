@@ -16,13 +16,17 @@ public final class Unread {
     final Map<String, Integer> counts = new HashMap<>();
     final Map<String, String> seen = new ConcurrentHashMap<>();
     final Path file;
+    final Path countsFile;
     final Runnable changed;
 
     public Unread(Cx cx, Runnable changed) {
         this.file = Store.home().resolve("cache").resolve(cx.session.teamId() + "-seen.json");
+        this.countsFile = Store.home().resolve("cache").resolve(cx.session.teamId() + "-unread.json");
         this.changed = changed;
         try {
             if (Files.exists(file)) Out.M.readTree(file.toFile()).properties().forEach(e -> seen.put(e.getKey(), e.getValue().asText()));
+            // what was lit when the app last ran is lit again at once; the sweep then confirms or clears it
+            if (Files.exists(countsFile)) Out.M.readTree(countsFile.toFile()).properties().forEach(e -> counts.put(e.getKey(), e.getValue().asInt(1)));
         } catch (IOException e) {
             Log.warn("cannot read the seen marks: " + e);
         }
@@ -33,13 +37,13 @@ public final class Unread {
     public int count(String conv) { return counts.getOrDefault(conv, 0); }
 
     /// One more unseen message (a live event). FX thread.
-    public void bump(String conv) { counts.merge(conv, 1, Integer::sum); changed.run(); }
+    public void bump(String conv) { counts.merge(conv, 1, Integer::sum); saveCounts(); changed.run(); }
 
     /// The conversation was opened and read up to `ts`. FX thread.
     public void clear(String conv, String ts) {
         var had = counts.remove(conv) != null;
         if (ts != null && !ts.isEmpty() && ts.compareTo(seen.getOrDefault(conv, "")) > 0) { seen.put(conv, ts); save(); }
-        if (had) changed.run();
+        if (had) { saveCounts(); changed.run(); }
     }
 
     /// Asks Slack once per conversation, gently, and lights those with messages newer than both Slack's read mark and ours.
@@ -58,8 +62,8 @@ public final class Unread {
                     var n = Math.max(c.path("unread_count_display").asInt(0), 1);
                     if (!latest.isEmpty() && latest.compareTo(read) > 0 && latest.compareTo(mine) > 0) {
                         lit++;
-                        Platform.runLater(() -> { counts.put(id, n); changed.run(); });
-                    }
+                        Platform.runLater(() -> { counts.put(id, n); saveCounts(); changed.run(); });
+                    } else Platform.runLater(() -> { if (counts.remove(id) != null) { saveCounts(); changed.run(); } }); // read elsewhere since
                     Thread.sleep(1000);
                 } catch (InterruptedException e) {
                     return;
@@ -69,6 +73,16 @@ public final class Unread {
             }
             Log.info("unread sweep: " + lit + " of " + convs.size() + " conversations have unseen messages (" + (System.nanoTime() - t0) / 1_000_000 + " ms)");
         });
+    }
+
+    /// The lit conversations, for the next start. FX thread (the only one that touches `counts`).
+    void saveCounts() {
+        try {
+            Files.createDirectories(countsFile.getParent());
+            Out.M.writeValue(countsFile.toFile(), new TreeMap<>(counts));
+        } catch (IOException e) {
+            Log.warn("cannot save the unread counts: " + e);
+        }
     }
 
     void save() {
