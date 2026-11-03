@@ -7,7 +7,7 @@ public class MakeBrand {
     static final Color AUBERGINE = new Color(0x4A154B), DEEP = new Color(0x2A0A2D), LILAC = new Color(0xE3CEEB), WHITE = Color.WHITE;
 
     public static void main(String[] a) throws Exception {
-        ImageIO.write(avatar(512), "png", new File("fxslack-512.png"));
+        ImageIO.write(avatar(512), "png", new File("slackfx-512.png"));
         ImageIO.write(preview(), "png", new File("social-preview-1280x640.png"));
         System.out.println("written");
     }
@@ -68,7 +68,7 @@ public class MakeBrand {
         g.drawString("need your approval.", 504, 476);
         g.setFont(new Font("Segoe UI", Font.PLAIN, 28));
         g.setColor(new Color(0xB9A0C2));
-        g.drawString("github.com/fxslack/slackfx", 504, 560);
+        g.drawString("github.com/chatsgate/slackfx", 504, 560);
         g.dispose();
         return img;
     }

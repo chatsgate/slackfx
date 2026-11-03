@@ -9,7 +9,7 @@ public class MakeIcons {
     static final Color AUBERGINE = new Color(0x4A154B), AUBERGINE_DARK = new Color(0x8A3B8A), WHITE = Color.WHITE;
 
     public static void main(String[] a) throws Exception {
-        var res = Path.of("app/src/main/resources/fxslack/slackfx");
+        var res = Path.of("app/src/main/resources/chatsgate/slackfx");
         var png = Path.of("app/icons/png");
         Files.createDirectories(res);
         Files.createDirectories(png);

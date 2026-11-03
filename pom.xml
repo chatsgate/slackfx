@@ -1,13 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
-    <groupId>io.github.fxslack</groupId>
-    <artifactId>fxslack-parent</artifactId>
+    <groupId>io.github.chatsgate</groupId>
+    <artifactId>slackfx-parent</artifactId>
     <version>0.2.2</version>
     <packaging>pom</packaging>
     <name>slackfx</name>
     <description>slackfx: a small chat client for Windows and a command line in one program. Independent project, not affiliated with Slack.</description>
-    <url>https://github.com/fxslack/slackfx</url>
+    <url>https://github.com/chatsgate/slackfx</url>
     <inceptionYear>2026</inceptionYear>
     <licenses>
         <license>
@@ -17,11 +17,11 @@
     </licenses>
     <issueManagement>
         <system>GitHub</system>
-        <url>https://github.com/fxslack/slackfx/issues</url>
+        <url>https://github.com/chatsgate/slackfx/issues</url>
     </issueManagement>
     <scm>
-        <url>https://github.com/fxslack/slackfx</url>
-        <connection>scm:git:https://github.com/fxslack/slackfx.git</connection>
+        <url>https://github.com/chatsgate/slackfx</url>
+        <connection>scm:git:https://github.com/chatsgate/slackfx.git</connection>
     </scm>
 
     <modules>

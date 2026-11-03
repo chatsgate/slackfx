@@ -4,7 +4,7 @@
 
 A small chat client for Windows, and a command line for the same workspace, in one program: `slackfx` with no arguments is the client, `slackfx <verb>` is the command line. Both act as you, through an app you create in your own workspace, so there is no browser to keep open and nothing to scrape.
 
-Status: 0.2, early. Windows only. Organisation [fxslack](https://fxslack.github.io). slackfx is an independent project and is not affiliated with Slack or Salesforce; "Slack" is their trademark.
+Status: 0.2, early. Windows only. Organisation [chatsgate](https://github.com/chatsgate). slackfx is an independent project and is not affiliated with Slack or Salesforce; "Slack" is their trademark.
 
 ![slackfx showing the release channel of an invented workspace](docs/screenshots/release.png)
 
@@ -67,7 +67,7 @@ slackfx send "#general" "Following up" --thread 1760000000.123456 --yes
 1. Create the app, once. At [api.slack.com/apps](https://api.slack.com/apps) choose **Create New App**, then **From a manifest**, pick your workspace and paste [`docs/app-manifest.json`](docs/app-manifest.json). It asks for user-token scopes only (it reads and posts as you) and turns on Socket Mode.
 2. Under **OAuth & Permissions** choose **Install to Workspace** and allow it. Copy the **User OAuth Token** (it starts with `xoxp-`).
 3. Under **Basic Information**, **App-Level Tokens**, generate one with the `connections:write` scope. Copy it (it starts with `xapp-`). It is what lets slackfx receive messages live; without it slackfx polls the open conversation instead.
-4. Save both in `app-config.json` in the app's folder, `%USERPROFILE%\fxslack\slackfx\` (`~/fxslack/slackfx/`):
+4. Save both in `app-config.json` in the app's folder, `%USERPROFILE%\chatsgate\slackfx\` (`~/chatsgate/slackfx/`):
 
    ```json
    {
@@ -86,7 +86,7 @@ An admin of your workspace may need to approve the app first. The tokens give wh
 
 ## Install
 
-Download `slackfx.exe` from the [latest release](https://github.com/fxslack/slackfx/releases/latest) and run it. It needs Java 25 or later. The exe fetches its program file from the same release and checks it against a checksum built into it. One exe is both the client and the command line; put it on your PATH to use the verbs.
+Download `slackfx.exe` from the [latest release](https://github.com/chatsgate/slackfx/releases/latest) and run it. It needs Java 25 or later. The exe fetches its program file from the same release and checks it against a checksum built into it. One exe is both the client and the command line; put it on your PATH to use the verbs.
 
 ## Updates
 
@@ -107,7 +107,7 @@ Every dependency resolves from Maven Central, with one exception: `leasegate-fra
 
 ## Where things are
 
-Everything slackfx keeps is in `%USERPROFILE%\fxslack\slackfx\`: `app-config.json` (the tokens), `sessions.json` (stored accounts), `cache/` (names, pictures, the last conversation list), `run/` (the log, and where slackfx listens). slackfx listens on `127.0.0.1` only, with a random token kept in your user profile.
+Everything slackfx keeps is in `%USERPROFILE%\chatsgate\slackfx\` (an install made before the project moved keeps using `%USERPROFILE%\fxslack\slackfx\` until the new folder exists): `app-config.json` (the tokens), `sessions.json` (stored accounts), `cache/` (names, pictures, the last conversation list), `run/` (the log, and where slackfx listens). slackfx listens on `127.0.0.1` only, with a random token kept in your user profile.
 
 ## Licence
 

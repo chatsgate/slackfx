@@ -2,16 +2,16 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
     <parent>
-        <groupId>io.github.fxslack</groupId>
-        <artifactId>fxslack-parent</artifactId>
+        <groupId>io.github.chatsgate</groupId>
+        <artifactId>slackfx-parent</artifactId>
         <version>0.2.2</version>
     </parent>
-    <artifactId>fxslack-slackfx</artifactId>
+    <artifactId>slackfx-app</artifactId>
     <name>slackfx</name>
     <description>slackfx: a small chat client and command line, one program.</description>
 
     <properties>
-        <main.class>fxslack.slackfx.Main</main.class>
+        <main.class>chatsgate.slackfx.Main</main.class>
     </properties>
 
     <dependencies>
@@ -22,8 +22,8 @@
             <version>0.1</version>
         </dependency>
         <dependency>
-            <groupId>io.github.fxslack</groupId>
-            <artifactId>fxslack-core</artifactId>
+            <groupId>io.github.chatsgate</groupId>
+            <artifactId>slackfx-core</artifactId>
             <version>${project.version}</version>
         </dependency>
         <dependency>
@@ -92,8 +92,8 @@
                     <icon>${project.basedir}/src/main/jr/slackfx.ico</icon>
                     <fileDescription>slackfx</fileDescription>
                     <productName>slackfx</productName>
-                    <companyName>fxslack</companyName>
-                    <copyright>fxslack contributors</copyright>
+                    <companyName>chatsgate</companyName>
+                    <copyright>chatsgate contributors</copyright>
                     <javaVersion>25+</javaVersion>
                     <jvmMode>dll</jvmMode>
                     <vmArgs>
@@ -108,11 +108,11 @@
                         <vmArg>-XX:ReservedCodeCacheSize=48m</vmArg>
                         <vmArg>--enable-native-access=ALL-UNNAMED</vmArg>
                     </vmArgs>
-                    <jarUrl>https://github.com/fxslack/slackfx/releases/download/v${project.version}/slackfx.jar</jarUrl>
-                    <updateUrl>https://github.com/fxslack/slackfx/releases/latest/download/slackfx.update.json</updateUrl>
-                    <supportName>fxslack</supportName>
-                    <supportIssues>https://github.com/fxslack/slackfx/issues</supportIssues>
-                    <supportUrl>https://github.com/fxslack/slackfx</supportUrl>
+                    <jarUrl>https://github.com/chatsgate/slackfx/releases/download/v${project.version}/slackfx.jar</jarUrl>
+                    <updateUrl>https://github.com/chatsgate/slackfx/releases/latest/download/slackfx.update.json</updateUrl>
+                    <supportName>chatsgate</supportName>
+                    <supportIssues>https://github.com/chatsgate/slackfx/issues</supportIssues>
+                    <supportUrl>https://github.com/chatsgate/slackfx</supportUrl>
                 </configuration>
             </plugin>
         </plugins>
