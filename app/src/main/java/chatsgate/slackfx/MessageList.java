@@ -6,6 +6,7 @@ import javafx.animation.PauseTransition;
 import javafx.application.Platform;
 import javafx.util.Duration;
 import chatsgate.slackfx.core.Cx;
+import chatsgate.slackfx.core.MsgCache;
 
 import module java.base;
 import javafx.geometry.*;
@@ -25,6 +26,7 @@ public final class MessageList {
     static final Pattern MENTION = Pattern.compile("<@([UW][A-Z0-9]+)|<#([CG][A-Z0-9]+)>");
 
     final Cx cx;
+    final String team;
     final Avatars avatars;
     final Label title = new Label(" "), hint = new Label();
     final ListView<ObjectNode> view = new ListView<>();
@@ -38,6 +40,7 @@ public final class MessageList {
 
     public MessageList(Cx cx, Avatars avatars) {
         this.cx = cx;
+        this.team = cx.session.teamId();
         this.avatars = avatars;
         view.getStyleClass().add("msg-list");
         view.setFocusTraversable(false);
@@ -64,23 +67,51 @@ public final class MessageList {
     public void open(String id, String label) {
         conv = id;
         title.setText(label);
-        hint.setText("loading...");
         view.getItems().clear();
         loading = true;
+        // what was saved last time is shown at once; Slack's answer then replaces or extends it behind it (a slow network no longer empties the pane)
+        var saved = MsgCache.load(team, id);
+        if (saved != null) {
+            labels.putAll(saved.labels());
+            more = saved.more();
+            view.getItems().setAll(saved.messages());
+            hint.setText("saved messages · updating...");
+            scrollEnd();
+        } else hint.setText("loading...");
         fetch(id, new Object[] {"channel", id, "limit", PAGE}, (r, page) -> {
-            more = r.path("has_more").asBoolean();
-            view.getItems().setAll(page);
+            var all = MsgCache.merge(saved == null ? null : saved.messages(), page);
+            more = all.size() > page.size() ? saved.more() : r.path("has_more").asBoolean();
+            var same = saved != null && all.equals(saved.messages());
+            if (!same) view.getItems().setAll(all);
             retitle();
-            toBottom();
+            if (same) onShown.accept(conv, all.getLast().path("ts").asText());
+            else toBottom();
+            persist();
         }, "load the messages");
     }
 
-    /// To the newest message. Rows get their real heights only as they are drawn (wrapped lines, pictures), and one extra
-    /// pass was not always enough, so it scrolls to the end again on the next two pulses and once more 150 ms later.
+    /// Saves the newest messages on show, on the background lane, for the next open.
+    void persist() {
+        var id = conv;
+        var items = List.copyOf(view.getItems());
+        var names = Map.copyOf(labels);
+        var older = more;
+        if (id != null && !items.isEmpty()) Bg.run(() -> MsgCache.save(team, id, items, names, older));
+    }
+
+    /// To the newest message, counting what is on show as seen.
     void toBottom() {
         var n = view.getItems().size();
         if (n == 0) return;
         onShown.accept(conv, view.getItems().getLast().path("ts").asText());
+        scrollEnd();
+    }
+
+    /// Scrolls to the end. Rows get their real heights only as they are drawn (wrapped lines, pictures), and one extra
+    /// pass was not always enough, so it scrolls to the end again on the next two pulses and once more 150 ms later.
+    void scrollEnd() {
+        var n = view.getItems().size();
+        if (n == 0) return;
         view.scrollTo(n - 1);
         Runnable end = () -> { if (view.lookup(".virtual-flow") instanceof VirtualFlow<?> f) f.scrollPixels(1e7); };
         Platform.runLater(() -> { end.run(); Platform.runLater(end); });
@@ -114,6 +145,7 @@ public final class MessageList {
             items.addAll(fresh);
             toBottom();
             retitle();
+            persist();
         }, "load new messages");
     }
 
